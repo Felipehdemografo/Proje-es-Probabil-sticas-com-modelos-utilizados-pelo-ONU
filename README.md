@@ -222,5 +222,3 @@ pop.pyramid(pop.pred, country, year=c(2060,2010))
 ```
 
 ---
-
-Este arquivo já está estruturado para ser colocado diretamente no GitHub. Você pode continuar enviando conteúdos que quiser adicionar ou pedir ajustes de formatação.
