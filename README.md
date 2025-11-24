@@ -61,14 +61,15 @@ Sobre o banco de dados da esperança de vida, é necessário identificar o país
 da região/país estudado. Ao final da série histórica há uma coluna informando qual o último ano da série (last.observed) e o primeiro ano da série (first.observed).
 Essa estrutura vale para os dados das 3 componentes. Os dados das componentes são do quinquenio e pode ser adotado os dados do ano do meio do período de 5 anos,
 por exemplo 1980-1985 é a esperança de vida do meio do ano de 1982. Ou ainda uma média dos anos do período. Lembrando que os dados podem ser anuais.
-O ideal é que a função tenha uma quantidade maior de iterações, inclusive é possível executar a função para que ela faça iterações até a convergência, mas vale a 
-observação que quanto maior a quantidade de iterações mais tempo levará. Para testes ou execuções com com finalidade de aprendizagem recomendamos 1000 iterações.
-No primeiro momento (função "run..mcm") é ajustado o modelo para definir os parametros e no segundo (função ".predict") que vem mais a frente o modelo será utilizado para projetar. Tanto a observação das iterações, quanto a do ajuste vale para as 3 componentes demográficas.
-
 
 
 ### 2.2 Estimação dos Parâmetros (run.e0.mcmc)
+```r
+O ideal é que a função tenha uma quantidade maior de iterações, inclusive é possível executar a função para que ela faça iterações até a convergência, mas vale a 
+observação que quanto maior a quantidade de iterações mais tempo levará. Para testes ou execuções com finalidade de aprendizagem recomendamos 1000 iterações.
+No primeiro momento (função "run..mcm") é ajustado o modelo para definir os parametros e no segundo (função ".predict") que vem mais a frente o modelo será utilizado para projetar. Tanto a observação das iterações, quanto a do ajuste vale para as 3 componentes demográficas.
 
+```
 me0_Brasil <- run.e0.mcmc(
   my.e0.file=data.e0F,
   output.dir=e0.dir,
@@ -81,13 +82,29 @@ me0_Brasil <- run.e0.mcmc(
   present.year=2020
 )
 ```
+Essa função calcula os parametros para um  modelo hierárquico bayesiano da esperança de vida. 
+my.e0.file:banco de dados da esperança de vida
+output.dir:Diretório no qual a saída da simulação deve ser gravada
+iter:Número de iterações a serem executadas em cada cadeia
+nr.chains:Número de cadeias MCMC (Markov Chain Monte Carlo - cadeia de Markov Monte Carlo) a serem executadas.
+replace.output:Se TRUE, as saídas existentes output.dir serão substituídas pelos resultados desta simulação. Com esse "TRUE" cada vez que a função é rodada sobrepõe sobre a anterior.
+start.year:Ano de inicio da série inserida no banco de dados
+present.year:Ano de final da série inserida no banco de dados
+Tanto o de inicio, quanto o de final são os mesmos da base de dados.
 
 ### 2.3 Projeção da Esperança de Vida
+Função que estima o "gap model" e faz a projeção conjunta da e0fem e e0masc
 
 ```r
 e0.pred <- e0.predict(sim.dir=e0.dir, end.year=2070,
                       replace.output=TRUE, burnin=500, nr.traj=1000)
 ```
+Essa função pega os parametros calculados no modelo hierárquico bayesiano e faz a predição do modelo para fornecer as projeções da esperança de vida.
+sim.dir:É o diretório onde estão armazenados os parametros do modelo
+end.year:Horizonte de projeção
+burnin:Número de iterações a serem descartadas do início dos rastreamentos de parâmetros.
+nr.traj:Número de trajetórias a serem geradas
+Para estimar manualmente o "gap model" e a projeção de maneira separada, utilizar e0.jmale.estimate e e0.jmale.predict.
 
 ---
 
@@ -101,12 +118,15 @@ install.packages("bayesTFR", dependencies = TRUE)
 library(bayesTFR)
 setwd("C:/Users/.../Dados")
 ```
-
-### 3.2 Estimação da Logística da TFT
-
 ```r
 tfr.dir <- "TFRsimulation_SC"
 data.tfr <- "TFT_SC.txt"
+```
+O primeiro comando indica o diretório onde serão armazenados os resultados, já o segundo é a leitura da base de dados utilizada.
+
+### 3.2 Estimação da Logística da TFT
+
+
 
 m2 <- run.tfr.mcmc(
   my.tfr.file=data.tfr,
@@ -121,21 +141,17 @@ m2 <- run.tfr.mcmc(
   use.wpp=FALSE
 )
 ```
+Essa função calcula os parametros para um  modelo hierárquico bayesiano da TFT. 
+my.trf.file:banco de dados da TFT
+output.dir:Diretório no qual a saída da simulação deve ser gravada
+iter:Número de iterações a serem executadas em cada cadeia
+nr.chains:Número de cadeias MCMC (Markov Chain Monte Carlo - cadeia de Markov Monte Carlo) a serem executadas.
+replace.output:Se TRUE, as saídas existentes output.dir serão substituídas pelos resultados desta simulação. Com esse "TRUE" cada vez que a função é rodada sobrepõe sobre a anterior.
+start.year:Ano de inicio da série inserida no banco de dados
+present.year:Ano de final da série inserida no banco de dados
+Tanto o de inicio, quanto o de final são os mesmos da base de dados.
 
-### 3.3 Estimação Fase 3
-
-```r
-m3 <- run.tfr3.mcmc(
-  my.tfr.file=data.tfr,
-  sim.dir=tfr.dir,
-  iter=1000,
-  replace.output=TRUE,
-  nr.chains=2,
-  thin=2
-)
-```
-
-### 3.4 Projeção da TFT
+### 3.3 Projeção da TFT
 
 ```r
 tfr.pred <- tfr.predict(sim.dir=tfr.dir, end.year=2070,
@@ -146,6 +162,7 @@ tfr.pred <- tfr.predict(sim.dir=tfr.dir, end.year=2070,
 ---
 
 ## 4. Projeção da Migração (bayesMig)
+O modelo da migração é o mais recente e ainda recebe ajustas, ele foi feito para migração internacional e os saldos se anulam, considerando que ninguém pode migrar do mundo, quem sai de um país obrigatoriamente entra em outro. A adaptação aqui é que é necessário rodar o modelo para todos os estados de uma vez. Rodando para todos os estados de uma vez o país ocupa o lugar do mundo no modelo e os estados dos países. O modelo projeta as migrações masculinas e femininas em conjunto.
 
 ### 4.1 Preparação
 
@@ -195,14 +212,21 @@ rm(list=ls())
 library(bayesPop)
 setwd("C:/Users/.../Dados")
 ```
+Leitura dos bancos de dados do histórico da população e também de histório da mortalidade, fecundidade e migração especificas. É possível também acrescentar projeções próprias das taxas especificas de mortalidade, fecundidade e migração. A função não apresenta diretamente as taxas especificas projetadas, mas é possível estimar essas taxas projetadas a partir dos níveis projetados em cada componente.
+```r
+popF_SC <- "popF_SC.txt"
+popM_SC <- "popM_SC.txt"
+mxF_SC <- "mxF_SC.txt"
+mxM_SC <- "mxM_SC.txt"
+```
 
 ### 5.2 Definição dos Diretórios
-
+Lembrando que os diretórios são os que já foram estabelecidos na execução das funções das componentes, pois esses diretórios serão utilizados na função bayespop para projetar a população.
 ```r
-tfr.dir <- "TFRsimulation_RR"
-e0.dir <- "e0simulation_RR"
-pop.dir <- "POPsimulation_RR_teste"
-mig.dir <- "migracao_simulation_RR_internacional"
+tfr.dir <- "TFRsimulation_SC"
+e0.dir <- "e0simulation_SC"
+pop.dir <- "POPsimulation_SC"
+mig.dir <- "migracao_simulation_SC"
 ```
 
 ### 5.3 Rodando o Modelo Final (pop.predict)
@@ -218,17 +242,31 @@ pop.pred <- pop.predict(
     tfr.sim.dir=tfr.dir,
     e0F.sim.dir=e0.dir,
     e0M.sim.dir="joint_",
-    popM=popM_Brasil,
-    popF=popF_Brasil,
-    mxM=mxM_Brasil,
-    mxF=mxF_Brasil,
-    migtraj=migration_Brasil
+    popM=popM_SC,
+    popF=popF_SC,
+    mxM=mxM_SC,
+    mxF=mxF_SC,
+    migtraj=migration_SC
   ),
   keep.vital.events=TRUE,
   lc.for.all=FALSE,
   replace.output=TRUE
 )
 ```
+Essa função é a que de fato projeta a população, junta as estimativas de esperança de vida,TFT e migração,
+mais os dados de população (popM,popF) por faixa etária quinquenal, mais as taxas especificas de mortalidade (mxM,mxF) e fecundidade (pasfr),
+e também a projeção e histórico de migração populacional.
+Na projeção populacional a esperança de vida masculina não é inserida diretamente, ela é feita com base na projeção de esperança feminina,
+os autores da função indicam que não é recomendada projetar as esperanças de vida feminina e masculina de forma separada, o indicado é projetar
+a esperança de vida feminina e projetar a masculina por relação com a feminina, o que é feito com o comando "e0M.sim.dir = "joint_"".
+wpp.year:É a revisão que está sendo utilizada como base, já pode ser utilizada a de 2022.
+output.dir:Diretório no qual a saída da simulação deve ser gravada
+nr.traj:Número de trajetórias a serem geradas
+replace.output:Se TRUE, as saídas existentes output.dir serão substituídas pelos resultados desta simulação. Com esse "TRUE" cada vez que a função é rodada sobrepõe sobre a anterior.
+end.year: Ano final da projeção -  horizonte de projeção
+start.year:Ano de inicio da série inserida no banco de dados
+present.year:Ano de final da série inserida no banco de dados
+Tanto o de inicio, quanto o de final são os mesmos da base de dados.
 
 ### 5.4 Análise dos Resultados
 
