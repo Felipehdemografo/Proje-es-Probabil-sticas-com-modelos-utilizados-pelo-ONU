@@ -64,12 +64,10 @@ por exemplo 1980-1985 é a esperança de vida do meio do ano de 1982. Ou ainda u
 
 
 ### 2.2 Estimação dos Parâmetros (run.e0.mcmc)
-```r
 O ideal é que a função tenha uma quantidade maior de iterações, inclusive é possível executar a função para que ela faça iterações até a convergência, mas vale a 
 observação que quanto maior a quantidade de iterações mais tempo levará. Para testes ou execuções com finalidade de aprendizagem recomendamos 1000 iterações.
 No primeiro momento (função "run..mcm") é ajustado o modelo para definir os parametros e no segundo (função ".predict") que vem mais a frente o modelo será utilizado para projetar. Tanto a observação das iterações, quanto a do ajuste vale para as 3 componentes demográficas.
-
-```
+```r
 me0_Brasil <- run.e0.mcmc(
   my.e0.file=data.e0F,
   output.dir=e0.dir,
