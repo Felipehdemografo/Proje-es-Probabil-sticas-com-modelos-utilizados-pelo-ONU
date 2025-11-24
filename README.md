@@ -51,10 +51,7 @@ Sempre lembrar de alterar esse diretório para o do seu computador.
 e0.dir <- "e0simulation_SC"
 data.e0F <- "e0f_SC.txt"
 ```
-
-
-Nesse caso está sendo fornecido um histórico de esperança de vida fora do pacote WPP.
-Aqui cabe uma observação muito importante, a forma com que o arquivo é lido é essencial para o funcionamento correto da função
+O primeiro comando indica o diretório onde serão armazenados os resultados, já o segundo é a leitura da base de dados utilizada. Nesse caso está sendo fornecido um histórico de esperança de vida fora do pacote WPP. Aqui cabe uma observação muito importante, a forma com que o arquivo é lido é essencial para o funcionamento correto da função
 O banco de dados tem o formato abaixo, esse é exatamente o banco de dados que utilizamos na função.
 country_code	country_name	reg_code	SIGLA	geocode	region	1980-1985	1985-1990	1990-1995	1995-2000	2000-2005	2005-2010	2010-2015	2015-2020	2020-2025	last.obs	first.obs	include_code
 76		        Brazil    		440    		SC  	7600440	States:SC	70.53		72.82	  	74.91  		76.12  		77.70  		78.75	  	79.44  		80.35  		79.73  		2025			1980			2
