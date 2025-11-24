@@ -7,7 +7,8 @@ Este tutorial apresenta, passo a passo, como realizar projeções probabilístic
 ---
 
 ## 1. Instalação dos Pacotes Necessários
-
+Esse pacote é necessário para instalar pacotes que estejam hospedados no github. Vale a ressalva que algumas funções só irão rodar corretamente com os pacotes mais
+mais recentes que estão disponíves no Github.
 ```r
 #Pacotes necessários
 install.packages("devtools", dependencies = TRUE)
