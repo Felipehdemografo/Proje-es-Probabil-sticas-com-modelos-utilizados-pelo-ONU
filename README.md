@@ -123,9 +123,7 @@ data.tfr <- "TFT_SC.txt"
 O primeiro comando indica o diretório onde serão armazenados os resultados, já o segundo é a leitura da base de dados utilizada.
 
 ### 3.2 Estimação da Logística da TFT
-
-
-
+```r
 m2 <- run.tfr.mcmc(
   my.tfr.file=data.tfr,
   output.dir=tfr.dir,
