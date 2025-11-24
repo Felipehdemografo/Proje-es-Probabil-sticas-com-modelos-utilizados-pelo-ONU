@@ -10,7 +10,6 @@ Este tutorial apresenta, passo a passo, como realizar projeções probabilístic
 Esse pacote é necessário para instalar pacotes que estejam hospedados no github. Vale a ressalva que algumas funções só irão rodar corretamente com os pacotes mais
 mais recentes que estão disponíves no Github.
 ```r
-#Pacotes necessários
 install.packages("devtools", dependencies = TRUE)
 library(devtools)
 options(timeout = 600)
@@ -32,6 +31,9 @@ library(MortCast)
 ---
 
 ## 2. Projeção da Esperança de Vida (bayesLife)
+O pacote básico para a esperança de vida é o bayeslife
+Ševcíková, H., & Raftery, A. E. (2011). bayesLife: Bayesian projection of life expectancy.
+Lembrando que os autores da função indicam projetar a esperança de vida feminina e projetar a esperança de vida masculina por relação com a feminina.
 
 ### 2.1 Preparação
 
@@ -43,12 +45,30 @@ library(bayesLife)
 getwd()
 setwd("C:/Users/.../Dados")
 ```
-
-### 2.2 Estimação dos Parâmetros (run.e0.mcmc)
+Sempre lembrar de alterar esse diretório para o do seu computador.
 
 ```r
 e0.dir <- "e0simulation_SC"
 data.e0F <- "e0f_SC.txt"
+```
+
+
+Nesse caso está sendo fornecido um histórico de esperança de vida fora do pacote WPP.
+Aqui cabe uma observação muito importante, a forma com que o arquivo é lido é essencial para o funcionamento correto da função
+O banco de dados tem o formato abaixo, esse é exatamente o banco de dados que utilizamos na função.
+country_code	country_name	reg_code	SIGLA	geocode	region	1980-1985	1985-1990	1990-1995	1995-2000	2000-2005	2005-2010	2010-2015	2015-2020	2020-2025	last.obs	first.obs	include_code
+76		        Brazil    		440    		SC  	7600440	States:SC	70.53		72.82	  	74.91  		76.12  		77.70  		78.75	  	79.44  		80.35  		79.73  		2025			1980			2
+Sobre o banco de dados da esperança de vida, é necessário identificar o país, código e nome, depois o estado, código e nome, depois uma série histórico da esperança de vida
+da região/país estudado. Ao final da série histórica há uma coluna informando qual o último ano da série (last.observed) e o primeiro ano da série (first.observed).
+Essa estrutura vale para os dados das 3 componentes. Os dados das componentes são do quinquenio e pode ser adotado os dados do ano do meio do período de 5 anos,
+por exemplo 1980-1985 é a esperança de vida do meio do ano de 1982. Ou ainda uma média dos anos do período. Lembrando que os dados podem ser anuais.
+O ideal é que a função tenha uma quantidade maior de iterações, inclusive é possível executar a função para que ela faça iterações até a convergência, mas vale a 
+observação que quanto maior a quantidade de iterações mais tempo levará. Para testes ou execuções com com finalidade de aprendizagem recomendamos 1000 iterações.
+No primeiro momento (função "run..mcm") é ajustado o modelo para definir os parametros e no segundo (função ".predict") que vem mais a frente o modelo será utilizado para projetar. Tanto a observação das iterações, quanto a do ajuste vale para as 3 componentes demográficas.
+
+
+
+### 2.2 Estimação dos Parâmetros (run.e0.mcmc)
 
 me0_Brasil <- run.e0.mcmc(
   my.e0.file=data.e0F,
